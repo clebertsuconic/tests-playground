@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:cxf="http://camel.apache.org/schema/cxf"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd http://camel.apache.org/schema/cxf https://camel.apache.org/schema/cxf/camel-cxf.xsd         http://camel.apache.org/schema/spring https://camel.apache.org/schema/spring/camel-spring.xsd">
+    <import resource="camel-amqp.xml"/>
+    <camelContext id="camel" trace="{{context.trace:false}}" xmlns="http://camel.apache.org/schema/spring">
+        <route id="receiveMessage">
+            <from id="fromDestination" uri="{{amqp.service.address}}"/>
+            <to id="createMessage" uri="bean:messageBean?method=createMessage"/>
+            <bean id="logMessage" method="logMessage" ref="messageBean"/>
+        </route>
+    </camelContext>
+</beans>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+						http://camel.apache.org/schema/spring https://camel.apache.org/schema/spring/camel-spring.xsd">
+
+	<bean id="amqp" class="org.apache.camel.component.amqp.AMQPComponent">
+		<property name="configuration" ref="jmsConfig" />
+	</bean>
+
+	<bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="${amqp.jmsConnectionFactory:jmsPooledConnectionFactory}"/>
+		<property name="transacted" value="${amqp.transacted:true}"/>
+		<property name="lazyCreateTransactionManager" value="${amqp.lazyCreateTransactionManager:false}"/>
+		<property name="deliveryPersistent" value="${amqp.deliveryPersistent:true}"/>
+		<property name="requestTimeout" value="${amqp.jmsRequestTimeout:10000}"/>
+		<!-- When using an AMQ Broker cluster the receiveTimeout must be greater than the redistribution-delay of the address from which messages are consumed! -->
+		<property name="receiveTimeout" value="${amqp.jmsReceiveTimeout:1000}"/>
+		<property name="cacheLevelName" value="${amqp.cacheLevelName:CACHE_CONSUMER}"/>
+		<property name="acknowledgementModeName" value="${amqp.acknowledgementModeName:AUTO_ACKNOWLEDGE}"/>
+	</bean>
+
+	<bean id="jmsPooledConnectionFactory" class="org.messaginghub.pooled.jms.JmsPoolConnectionFactory" init-method="start" destroy-method="stop">
+		<property name="maxConnections" value="${amqp.jmsMaxConnections:10}"/>
+		<property name="maxSessionsPerConnection" value="${amqp.jmsMaximumActiveSessionPerConnection:10}"/>
+		<property name="useAnonymousProducers" value="${amqp.useAnonymousProducers:false}"/>
+		<property name="connectionCheckInterval" value="${amqp.connectionCheckInterval:-1}"/>
+		<property name="connectionIdleTimeout" value="${amqp.connectionIdleTimeout:30000}"/>
+		<property name="connectionFactory" ref="jmsConnectionFactory"/>
+	</bean>
+
+	<bean id="jmsConnectionFactory" class="org.apache.qpid.jms.JmsConnectionFactory">
+		<property name="remoteURI" value="${amqp.remoteURI}"/>
+		<property name="username" value="${amqp.userName:}"/>
+		<property name="password" value="${amqp.password:}"/>
+	</bean>
+</beans>

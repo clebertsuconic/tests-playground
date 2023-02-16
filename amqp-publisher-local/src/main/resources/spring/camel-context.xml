@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd http://camel.apache.org/schema/spring https://camel.apache.org/schema/spring/camel-spring.xsd">
+    <import resource="camel-amqp.xml"/>
+    <camelContext id="camel" trace="{{context.trace:false}}" xmlns="http://camel.apache.org/schema/spring">
+        <route id="generateMessages">
+            <from id="startTimer" uri="timer://trigger?fixedRate=true&amp;period={{timer.period:10000}}&amp;repeatCount={{timer.repeatCount:0}}"/>
+            <to id="delegateEvent" uri="seda:processMessage?size=2147483646"/>
+        </route>
+        <route id="processMessage">
+            <from id="handleEvent" uri="seda:processMessage?concurrentConsumers={{seda.concurrentConsumers:10}}"/>
+            <to id="createMessage" uri="bean:messageBean?method=createMessage"/>
+            <bean id="logMessage" method="logMessage" ref="messageBean"/>
+            <bean id="setHeaders" method="setHeaders" ref="messageBean"/>
+            <setBody id="setPayload">
+                <simple>${body.payload}</simple>
+            </setBody>
+            <to id="publishMessage" pattern="InOnly" uri="{{amqp.service.address}}"/>
+            <onException id="onJMSException">
+                <exception>javax.jms.JMSException</exception>
+                <redeliveryPolicy logStackTrace="false"
+                    maximumRedeliveries="{{retry.count:5}}"
+                    redeliveryDelay="{{retry.delay:250}}"
+                    retryAttemptedLogLevel="WARN" useExponentialBackOff="{{retry.exponentialBackoff:true}}"/>
+                <handled>
+                    <constant>true</constant>
+                </handled>
+            </onException>
+        </route>
+    </camelContext>
+</beans>
