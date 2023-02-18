@@ -1,4 +1,4 @@
-export BROKER=/Users/clebertsuconic/work/apache/activemq-artemis/artemis-distribution/target/apache-artemis-2.21.0-bin/apache-artemis-2.21.0
+. ./set-broker.sh
 
 rm -rf node1
 rm -rf node2
