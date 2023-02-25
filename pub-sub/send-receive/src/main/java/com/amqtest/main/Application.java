@@ -25,7 +25,7 @@ import org.springframework.context.annotation.ImportResource;
 @ImportResource({"classpath:spring/camel-context.xml"})
 public class Application extends RouteBuilder {
 
-    private String parameters = "amqp.idleTimeout=120000&failover.maxReconnectAttempts=1&jms.prefetchPolicy.all=1&jms.forceAsyncAcks=true";
+    private String parameters = "amqp.idleTimeout=120000&failover.maxReconnectAttempts=1&jms.prefetchPolicy.all=1000&jms.forceAsyncAcks=true";
     private String uri = "failover://(amqp://localhost:61616)";
     private int maxConnections = 20;
     private int concurrentConsumers = 20;
@@ -51,19 +51,19 @@ public class Application extends RouteBuilder {
     public void configure() throws Exception {
 
         //APP 4 consume message from topic
-        from("amqp-out:topic:t.test.out::test.t.test.out")
+        from("amqp-out:topic:t.test.out::test.t.test.out?cacheLevelName=CACHE_NONE")
             .id("APP4")
             .to("log:${headers}")
         ;
         
       //APP 3 consume message from topic
-        from("amqp-out:topic:t.test.out::falcon.t.test.out")
+        from("amqp-out:topic:t.test.out::falcon.t.test.out?cacheLevelName=CACHE_NONE")
             .id("APP3")
             .to("log:${headers}")
         ;
 
         //APP 2 consume message from route
-        from("amqp-in:queue:q.test.in?cacheLevelName=CACHE_CONSUMER")
+        from("amqp-in:queue:q.test.in?cacheLevelName=CACHE_NONE")
             .id("APP2")
             .to("amqp-out:topic:t.test.out")
         ;
