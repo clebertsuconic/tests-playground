@@ -3,4 +3,6 @@ export BROKER=/Users/clebertsuconic/work/apache/activemq-artemis/artemis-distrib
 export AGENT=/Users/clebertsuconic/work/apache/check-leak/check-leak/target/check-leak-0.8-SNAPSHOT.jar
 export CURRENT_DIR=`pwd`
 
+java -jar $AGENT test.dll
+
 export AGENT_OPTIONS="-agentpath:$CURRENT_DIR/test.dll -javaagent:$AGENT=sleep=60000"
