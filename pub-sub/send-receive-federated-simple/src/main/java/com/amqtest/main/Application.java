@@ -35,13 +35,11 @@ public class Application extends RouteBuilder  {
         from("amqp-b1:queue:test.queue?cacheLevelName=CACHE_NONE")
             .id("federated-consumer-route-b1")
             .log("Message received B1: ${headers}")
-            .delay(500)
         ;
         // Consume the federated message - B2
         from("amqp-b2:queue:test.queue?cacheLevelName=CACHE_NONE")
             .id("federated-consumer-route-b2")
             .log("Message received B2: ${headers}")
-            .delay(500)
         ;
 
 
