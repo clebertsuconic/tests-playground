@@ -1,5 +1,5 @@
 # set BROKER accordingly to your environment. Notice you don't include the /bin as part of the BROKER
-export BROKER=/Users/clebertsuconic/work/apache/activemq-artemis/artemis-distribution/target/apache-artemis-2.29.0-SNAPSHOT-bin/apache-artemis-2.29.0-SNAPSHOT
+export BROKER=/Users/asouza/redhat/middleware/amq/amq-broker-7.10.2
 export AGENT=/Users/clebertsuconic/work/apache/check-leak/check-leak/target/check-leak-0.8-SNAPSHOT.jar
 export CURRENT_DIR=`pwd`
 
