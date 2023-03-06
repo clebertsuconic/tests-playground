@@ -1,0 +1,22 @@
+<connectors>
+    <connector name="b1">tcp://localhost:61616</connector>
+    <connector name="b2">tcp://localhost:61617?ackBatchSize=1;consumerWindowSize=-1</connector>
+</connectors>
+
+<federations>
+
+    <federation name="federation-1" user="artemis" password="artemis">
+        <upstream name="upstream-1">
+           <static-connectors>
+              <connector-ref>b2</connector-ref>
+           </static-connectors>
+           <policy ref="policy-1"/>
+        </upstream>
+
+        <queue-policy name="policy-1">
+           <include queue-match="#" address-match="test.#" />
+        </queue-policy>
+
+    </federation>
+
+</federations>
