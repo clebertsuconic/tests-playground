@@ -6,6 +6,7 @@ node2
 .metadata
 bin/
 tmp/
+**/*.iml
 *.tmp
 *.bak
 *.swp
@@ -65,3 +66,5 @@ MANIFEST.MF
 
 .pmd
 microservice
+
+.idea
