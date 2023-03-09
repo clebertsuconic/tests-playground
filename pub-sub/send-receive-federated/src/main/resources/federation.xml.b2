@@ -1,0 +1,30 @@
+<connectors>
+
+            <!-- Workaround -->
+            <!--  
+            <connector name="b1">tcp://localhost:61616?ackBatchSize=1;consumerWindowSize=512;consumerMaxRate=10</connector>
+            <connector name="b2">tcp://localhost:61617?ackBatchSize=1;consumerWindowSize=512;consumerMaxRate=10</connector>
+            -->
+
+            <!-- it will fail -->
+            <connector name="b1">tcp://localhost:61616</connector>
+            <connector name="b2">tcp://localhost:61617</connector> 
+</connectors>
+
+
+<federations>
+    <federation name="federation-2" user="artemis" password="artemis">
+        <upstream name="upstream-2">
+           <static-connectors>
+              <connector-ref>b1</connector-ref>
+           </static-connectors>
+           <policy ref="policy-2"/>
+        </upstream>
+
+
+        <queue-policy name="policy-2">
+           <include queue-match="#" address-match="test.#" />
+        </queue-policy>
+
+    </federation>
+</federations>
